@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Practice - Mechanical Education Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: white;
+            margin: 0;
+            padding: 0;
+            background-color: #1e3c72;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .slide {
+            width: 90vw;
+            height: 90vh;
+            background: white;
+            padding: 3rem;
+            color: #333;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            transition: all 0.6s ease;
+            opacity: 0;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            z-index: 10;
+        }
+
+        .slide.next {
+            transform: translate(30%, -50%) scale(0.8);
+            opacity: 0.3;
+            z-index: 2;
+        }
+
+        .slide.prev {
+            transform: translate(-130%, -50%) scale(0.8);
+            opacity: 0.3;
+            z-index: 2;
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            color: #1e3c72;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(45deg, #1e3c72, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .slide h2::after {
+            content: '';
+            width: 60px;
+            height: 3px;
+            background: #feca57;
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .slide p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Title Slide */
+        .title-slide {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: white;
+            background: none;
+            -webkit-text-fill-color: white;
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.8rem;
+            color: #feca57;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .title-slide .author-info {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            color: white;
+            margin: 1rem auto;
+            max-width: 600px;
+            backdrop-filter: blur(5px);
+        }
+
+        .university-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 2rem;
+        }
+
+        /* Content Layouts */
+        .content-container {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .feature-list li {
+            padding: 15px 0;
+            padding-left: 40px;
+            position: relative;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li::before {
+            content: "⚙️";
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            top: 12px;
+        }
+
+        .course-card {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid #feca57;
+        }
+
+        .course-card h3 {
+            margin-bottom: 0.8rem;
+        }
+
+        .course-features {
+            list-style: none;
+            margin-top: 0.8rem;
+        }
+
+        .course-features li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .course-features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .skill-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 12px;
+            color: white;
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            color: #667eea;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e3c72;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover {
+            background: #feca57;
+            transform: translateY(-2px);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e3c72;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 1001;
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #feca57;
+            transition: width 0.3s ease;
+        }
+
+        /* Image Styles */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .gallery-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item p {
+            padding: 0.8rem;
+            text-align: center;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .content-image {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .diagram-image {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: contain;
+            margin: 1rem 0;
+        }
+
+        .icon-image {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
+        /* Bullet Points */
+        .bullet-points {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bullet-points li {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 2rem;
+                width: 95vw;
+                height: 85vh;
+            }
+
+            .slide h1 {
+                font-size: 2.5rem;
+            }
+
+            .slide h2 {
+                font-size: 2rem;
+            }
+
+            .title-slide h1 {
+                font-size: 3rem;
+            }
+
+            .title-slide .subtitle {
+                font-size: 1.4rem;
+            }
+
+            .two-column,
+            .three-column {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .university-logo {
+                width: 80px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="slide-counter" id="slideCounter">1 / 8</div>
+
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active title-slide">
+            <!--<img src="images/umat-logo.png" alt="University Logo" class="university-logo animate-in">-->
+            <h1 class="animate-in">Engineering Practice</h1>
+            <p class="subtitle animate-in delay-1">Master Mechanical Engineering Through Hands-On Learning with MechaMinds</p>
+            <div class="author-info animate-in delay-2">
+                <h3>🎓 Comprehensive Automotive Training Program</h3>
+                <p>University of Mines and Technology, Tarkwa</p>
+                <p>📧 cy-mknyadzorgbe5023@umat.edu.gh | 📞 +233 50 859 0657</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: About -->
+        <div class="slide">
+            <div class="content-container">
+                <h2 class="animate-in">About Engineering Practice</h2>
+                <div class="two-column">
+                    <div class="animate-in">
+                            <!--<img src="images/workshop-overview.jpg" alt="Workshop overview" class="content-image">-->
+                        <p>Our Engineering Practice course provides comprehensive hands-on training in mechanical systems, focusing on automotive maintenance and repair.</p>
+                        <p>Students gain practical experience working with real vehicles and equipment under expert supervision, emphasizing collaborative learning and safety protocols.</p>
+                    </div>
+                    <div class="animate-in delay-1">
+                        <h3>Key Features:</h3>
+                        <ul class="bullet-points">
+                            <li>Practical automotive diagnostics and repair</li>
+                            <li>Engine systems analysis and maintenance</li>
+                            <li>Team-based learning environment</li>
+                            <li>Industry-standard safety protocols</li>
+                            <li>Real-world problem solving</li>
+                        </ul>
+                        <!--<img src="images/teamwork.jpg" alt="Students working together" class="content-image">-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Course Modules Part 1 -->
+        <div class="slide">
+            <div class="content-container">
+                <h2 class="animate-in"> Modules</h2>
+                <div class="two-column">
+                    <div class="course-card animate-in">
+                        <!--<img src="images/engine-diagnostics.jpg" alt="Engine diagnostics" class="content-image">-->
+                        <h3>🔍 Engine Diagnostics</h3>
+                        <p>Learn comprehensive engine analysis, troubleshooting techniques, and diagnostic procedures using modern tools.</p>
+                        <ul class="course-features">
+                            <li>Engine component identification</li>
+                            <li>Diagnostic equipment usage</li>
+                            <li>Troubleshooting methodologies</li>
+                            <li>Performance analysis</li>
+                        </ul>
+                    </div>
+                    <div class="course-card animate-in delay-1">
+                        <!--<img src="images/hands-on-repair.jpg" alt="Hands-on repair" class="content-image">-->
+                        <h3>🔧 Hands-On Repair</h3>
+                        <p>Practical experience in automotive repair, maintenance procedures, and quality control measures.</p>
+                        <ul class="course-features">
+                            <li>Tool handling and safety</li>
+                            <li>Repair techniques</li>
+                            <li>Quality assurance</li>
+                            <li>Professional standards</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Course Modules Part 2 -->
+        <div class="slide">
+            <div class="content-container">
+                <h2 class="animate-in">Specialized Training Modules</h2>
+                <div class="two-column">
+                    <div class="course-card animate-in">
+                        <!--<img src="images/wheel-tire.jpg" alt="Wheel and tire systems" class="content-image">-->
+                        <h3>🛞 Wheel & Tire Systems</h3>
+                        <p>Specialized training in wheel alignment, tire maintenance, and suspension system components.</p>
+                        <ul class="course-features">
+                            <li>Tire pressure management</li>
+                            <li>Wheel alignment procedures</li>
+                            <li>Safety inspections</li>
+                            <li>Precision measurements</li>
+                        </ul>
+                    </div>
+                    <div class="course-card animate-in delay-1">
+                        <!--<img src="images/team-collaboration.jpg" alt="Team collaboration" class="content-image">-->
+                        <h3>👥 Team Collaboration</h3>
+                        <p>Develop essential teamwork skills through group projects and collaborative problem-solving.</p>
+                        <ul class="course-features">
+                            <li>Group project management</li>
+                            <li>Communication skills</li>
+                            <li>Peer learning</li>
+                            <li>Leadership development</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Skills Development -->
+        <div class="slide">
+            <div class="content-container">
+                <h2 class="animate-in">Skills Developed</h2>
+                <!--<img src="images/skills-overview.jpg" alt="Skills development" class="content-image animate-in">-->
+                <div class="skills-grid">
+                    <div class="skill-item animate-in">
+                        <!--<img src="images/technical-icon.png" alt="Technical icon" class="icon-image">-->
+                        <h3>Technical Expertise</h3>
+                        <p>Master automotive repair and maintenance techniques with industry-standard tools and procedures.</p>
+                    </div>
+                    <div class="skill-item animate-in delay-1">
+                        <!--<img src="images/diagnostic-icon.png" alt="Diagnostic icon" class="icon-image">-->
+                        <h3>Diagnostic Skills</h3>
+                        <p>Develop analytical thinking and systematic problem-solving approaches for complex mechanical issues.</p>
+                    </div>
+                    <div class="skill-item animate-in delay-1">
+                        <!--<img src="images/teamwork-icon.png" alt="Teamwork icon" class="icon-image">-->
+                        <h3>Teamwork</h3>
+                        <p>Build collaborative skills through group projects and peer learning experiences.</p>
+                    </div>
+                    <div class="skill-item animate-in delay-2">
+                        <!--<img src="images/safety-icon.png" alt="Safety icon" class="icon-image">-->
+                        <h3>Safety Protocols</h3>
+                        <p>Learn and apply comprehensive safety measures in workshop and industrial environments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Training Gallery -->
+        <div class="slide">
+            <div class="content-container">
+                <h2 class="animate-in">Training Environment</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item animate-in">
+                        <img src="collaborative learning.jpg" alt="Students working together">
+                        <p>Collaborative Learning</p>
+                    </div>
+                    <div class="gallery-item animate-in delay-1">
+                        <img src="engine3.jpg" alt="Engine examination">
+                        <p>Engine Analysis</p>
+                    </div>
+                    <div class="gallery-item animate-in delay-1">
+                        <img src="precision2.jpg" alt="Precision work">
+                        <p>Precision Work</p>
+                    </div>
+                    <div class="gallery-item animate-in delay-2">
+                        <img src="wheel.jpg" alt="Tire system work">
+                        <p>Wheel Maintenance</p>
+                    </div>
+                    <div class="gallery-item animate-in delay-2">
+                        <img src="engine2.jpg" alt="Advanced procedures">
+                        <p>Technical Skills</p>
+                    </div>
+                    <div class="gallery-item animate-in delay-3">
+                        <img src="safety5.jpg" alt="Safety practices">
+                        <p>Safety Focus</p>
+                    </div>
+                </div>
+                <p class="animate-in delay-3" style="text-align: center; margin-top: 1.5rem; font-style: italic;">
+                    Our state-of-the-art facilities provide real-world learning experiences with modern equipment and safety-focused environments.
+                </p>
+            </div>
+        </div>
+
+    <div class="slide">
+            <div class="content-container">
+                <h2 class="animate-in">MechaMinds Gallery Dept.</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item animate-in">
+                        <img src="amy1.jpg" alt="Students working together">
+                        <!--<p>Collaborative Learning</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-1">
+                        <img src="domingo1.jpg" alt="Engine examination">
+                        <!--<p>Engine Analysis</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-1">
+                        <img src="qwerty1.jpg" alt="Precision work">
+                        <!--<p>Precision Work</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-2">
+                        <img src="qwerty2.jpg" alt="Tire system work">
+                        <!--<p>Wheel Maintenance</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-2">
+                        <img src="qwerty4.jpg" alt="Advanced procedures">
+                        <!--<p>Technical Skills</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-3">
+                        <img src="qwerty5.jpg" alt="Safety practices">
+                        <!--<p>Safety Focus</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-3">
+                        <img src="qwerty6.jpg" alt="Safety practices">
+                        <p>Safety Focus</p>
+                    </div>
+                    <div class="gallery-item animate-in delay-3">
+                        <img src="qwerty8.jpg" alt="Safety practices">
+                        <!--<p>Safety Focus</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-3">
+                        <img src="qwerty10.jpg" alt="Safety practices">
+                        <!--<p>Safety Focus</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-3">
+                        <img src="qwerty11.jpg" alt="Safety practices">
+                        <!--<p>Safety Focus</p>-->
+                    </div>
+                    <div class="gallery-item animate-in delay-3">
+                        <img src="qwerty12.jpg" alt="Safety practices">
+                        <!--<p>Safety Focus</p>-->
+                    <div class="gallery-item animate-in delay-3">
+                        <img src="serwaa1.jpg" alt="Safety practices">
+                        <!--<p>Safety Focus</p>-->
+                    </div>
+                    </div>
+                </div>
+                <p class="animate-in delay-3" style="text-align: center; margin-top: 1.5rem; font-style: italic;">
+                    Our state-of-the-art facilities provide real-world learning experiences with modern equipment and safety-focused environments.
+                </p>
+            </div>
+        </div>
+
+        <div class="slide">
+    <div class="content-container">
+        <h2 class="animate-in">MechaMinds Video Gallery</h2>
+        <style>
+            /* Video Gallery Styles */
+            .video-gallery {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .video-item {
+                position: relative;
+                width: 100%;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                background: #000;
+            }
+
+            .video-item video {
+                width: 100%;
+                height: 100%;
+                max-height: 250px;
+                object-fit: cover;
+                display: block;
+                outline: none;
+                transition: transform 0.3s ease;
+            }
+
+            .video-item video:hover {
+                transform: scale(1.02);
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 900px) {
+                .video-gallery {
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                }
+            }
+
+            @media (max-width: 600px) {
+                .video-gallery {
+                    grid-template-columns: 1fr;
+                }
+                
+                .video-item video {
+                    max-height: 300px;
+                }
+            }
+
+            /* Video controls styling */
+            .video-item video::-webkit-media-controls {
+                background: rgba(0,0,0,0.5);
+            }
+
+            .video-item video::-webkit-media-controls-play-button,
+            .video-item video::-webkit-media-controls-mute-button {
+                background: #feca57;
+                border-radius: 50%;
+            }
+        </style>
+        
+        <div class="video-gallery">
+            <!-- Video 1 -->
+            <div class="video-item animate-in">
+                <video controls>
+                    <source src="vid7.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <!-- Video 2 -->
+            <div class="video-item animate-in delay-1">
+                <video controls>
+                    <source src="vid1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <!-- Video 3 -->
+            <div class="video-item animate-in delay-1">
+                <video controls>
+                    <source src="vid2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <!-- Video 4 -->
+            <div class="video-item animate-in delay-2">
+                <video controls>
+                    <source src="vid3.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <!-- Video 5 -->
+            <div class="video-item animate-in delay-2">
+                <video controls>
+                    <source src="vid4.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <!-- Video 6 -->
+            <div class="video-item animate-in delay-3">
+                <video controls>
+                    <source src="vid5.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="video-item animate-in delay-3">
+                <video controls>
+                    <source src="vid6.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="video-item animate-in delay-3">
+                <video controls>
+                    <source src="qwerty7.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        <p class="animate-in delay-3" style="text-align: center; margin-top: 1.5rem; font-style: italic;">
+            MechaMinds, we produce nothing but clean and Professional work
+        </p>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="content-container">
+        <h2 class="animate-in">Mechanical Systems Explained</h2>
+        
+        <div class="systems-grid">
+            <!-- Transmission System -->
+            <div class="system-card animate-in">
+                <h3>⚙️ Transmission System</h3>
+                <div class="system-details">
+                    <p>Transfers power from engine to wheels through:</p>
+                    <ul>
+                        <li>Gearbox with multiple ratios</li>
+                        <li>Clutch/torque converter</li>
+                        <li>Drive shafts & differential</li>
+                    </ul>
+                    <p class="system-purpose">Enables efficient operation at various speeds</p>
+                </div>
+            </div>
+
+            <!-- Braking System -->
+            <div class="system-card animate-in delay-1">
+                <h3>🛑 Braking System</h3>
+                <div class="system-details">
+                    <p>Slows/stops vehicle using:</p>
+                    <ul>
+                        <li>Brake pads & rotors</li>
+                        <li>Hydraulic fluid pressure</li>
+                        <li>ABS (Anti-lock system)</li>
+                    </ul>
+                    <p class="system-purpose">Converts kinetic energy to heat via friction</p>
+                </div>
+            </div>
+
+            <!-- Jack Holding -->
+            <div class="system-card animate-in delay-1">
+                <h3>🔼 Jack Holding</h3>
+                <div class="system-details">
+                    <p>Lifting/support mechanisms:</p>
+                    <ul>
+                        <li>Hydraulic/screw jacks</li>
+                        <li>Safety stands</li>
+                        <li>Locking mechanisms</li>
+                    </ul>
+                    <p class="system-purpose">Secures vehicle during maintenance</p>
+                </div>
+            </div>
+
+            <!-- Tires -->
+            <div class="system-card animate-in delay-2">
+                <h3>🛞 Tires</h3>
+                <div class="system-details">
+                    <p>Road contact components:</p>
+                    <ul>
+                        <li>Rubber with tread patterns</li>
+                        <li>Steel/cord reinforcement</li>
+                        <li>Proper inflation critical</li>
+                    </ul>
+                    <p class="system-purpose">Affects traction, handling & efficiency</p>
+                </div>
+            </div>
+
+            <!-- Shaft -->
+            <div class="system-card animate-in delay-2">
+                <h3>🔩 Shaft</h3>
+                <div class="system-details">
+                    <p>Rotating power transmitter:</p>
+                    <ul>
+                        <li>Hardened steel construction</li>
+                        <li>Bearing supported</li>
+                        <li>Universal joints</li>
+                    </ul>
+                    <p class="system-purpose">Withstands torsional stress</p>
+                </div>
+            </div>
+
+            <!-- Engine Oil -->
+            <div class="system-card animate-in delay-3">
+                <h3>🛢️ Engine Oil</h3>
+                <div class="system-details">
+                    <p>Lubrication system:</p>
+                    <ul>
+                        <li>Reduces friction</li>
+                        <li>Cools components</li>
+                        <li>10W-30 viscosity typical</li>
+                    </ul>
+                    <p class="system-purpose">Essential for engine longevity</p>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* Mechanical Systems Grid */
+            .systems-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+
+            .system-card {
+                background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+                border-radius: 12px;
+                padding: 1.5rem;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                border-left: 5px solid #feca57;
+                transition: transform 0.3s ease;
+            }
+
+            .system-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .system-card h3 {
+                color: #1e3c72;
+                margin-top: 0;
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .system-details {
+                font-size: 1.1rem;
+            }
+
+            .system-details ul {
+                padding-left: 1.5rem;
+                margin: 0.8rem 0;
+            }
+
+            .system-details li {
+                margin-bottom: 0.5rem;
+            }
+
+            .system-purpose {
+                font-style: italic;
+                color: #667eea;
+                margin-top: 1rem;
+                font-weight: 500;
+            }
+
+            @media (max-width: 768px) {
+                .systems-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .system-card {
+                    padding: 1.2rem;
+                }
+            }
+        </style>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<div class="slide">
+    <div class="content-container">
+        <h2 class="animate-in">Moral Lessons from Mechanical Engineering</h2>
+        
+        <div class="lessons-container">
+            <!-- Technical Lessons -->
+            <div class="lesson-card animate-in" style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);">
+                <h3>🔧 Technical Wisdom</h3>
+                <div class="lesson-content">
+                    <ul>
+                        <li><strong>Precision matters</strong> - Like engine tolerances, small details create big impacts</li>
+                        <li><strong>Maintenance prevents failure</strong> - Regular "self-checks" keep systems running smoothly</li>
+                        <li><strong>Friction is necessary</strong> - Challenges (like brake friction) often serve important purposes</li>
+                        <li><strong>Proper lubrication reduces wear</strong> - Kindness and patience ease life's interactions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Life Lessons -->
+            <div class="lesson-card animate-in delay-1" style="background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 100%);">
+                <h3>🌱 Life Principles</h3>
+                <div class="lesson-content">
+                    <ul>
+                        <li><strong>Systems thinking</strong> - Everything is interconnected like vehicle components</li>
+                        <li><strong>Adapt like a transmission</strong> - Shift gears when life's terrain changes</li>
+                        <li><strong>Balance forces</strong> - Equal pressure on all tires creates stable movement</li>
+                        <li><strong>Heat is transformative</strong> - Pressure and challenges forge strength</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Teamwork Lessons -->
+            <div class="lesson-card animate-in delay-2" style="background: linear-gradient(135deg, #f8f9fa 0%, #fff3e0 100%);">
+                <h3>👥 Teamwork Insights</h3>
+                <div class="lesson-content">
+                    <ul>
+                        <li><strong>Alignment is crucial</strong> - Like wheel alignment, shared vision prevents drift</li>
+                        <li><strong>Load distribution</strong> - Share burdens like a chassis distributes weight</li>
+                        <li><strong>Regular diagnostics</strong> - Check team dynamics like engine diagnostics</li>
+                        <li><strong>Safety first</strong> - Protect your team like jack stands protect mechanics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="final-quote animate-in delay-3">
+            <p>"Engineering teaches us that perfect systems require both precision in design and adaptability in operation - 
+            a lesson that applies equally to machines and lives."</p>
+        </div>
+
+        <style>
+            /* Lessons Learned Styling */
+            .lessons-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin: 2rem 0;
+            }
+
+            .lesson-card {
+                border-radius: 12px;
+                padding: 1.5rem;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                border-top: 5px solid #feca57;
+            }
+
+            .lesson-card h3 {
+                color: #1e3c72;
+                margin-top: 0;
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .lesson-content ul {
+                padding-left: 1.2rem;
+            }
+
+            .lesson-content li {
+                margin-bottom: 0.8rem;
+                line-height: 1.5;
+                font-size: 1.1rem;
+            }
+
+            .lesson-content strong {
+                color: #1e3c72;
+            }
+
+            .final-quote {
+                text-align: center;
+                font-style: italic;
+                font-size: 1.2rem;
+                color: #2c3e50;
+                margin-top: 2rem;
+                padding: 1.5rem;
+                background: rgba(254, 202, 87, 0.1);
+                border-radius: 12px;
+                border-left: 4px solid #feca57;
+            }
+
+            @media (max-width: 768px) {
+                .lessons-container {
+                    grid-template-columns: 1fr;
+                }
+                
+                .lesson-card {
+                    padding: 1.2rem;
+                }
+            }
+        </style>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- Slide 7: Contact Information -->
+        <div class="slide">
+            <div class="content-container">
+                <h2 class="animate-in">Get In Touch</h2>
+                <!--<img src="images/campus-view.jpg" alt="University campus" class="content-image animate-in">-->
+                <div class="contact-grid">
+                    <div class="contact-item animate-in">
+                        <div class="contact-icon">📍</div>
+                        <h4>Address</h4>
+                        <p>MechaMinds<br>University of Mines and Technology<br>Tarkwa, Ghana</p>
+                    </div>
+                    <div class="contact-item animate-in delay-1">
+                        <div class="contact-icon">📞</div>
+                        <h4>Phone</h4>
+                        <p>+233 50 859 0657</p>
+                    </div>
+                    <div class="contact-item animate-in delay-1">
+                        <div class="contact-icon">✉️</div>
+                        <h4>Email</h4>
+                        <p>cy-mknyadzorgbe5023@umat.edu.gh</p>
+                    </div>
+                    <div class="contact-item animate-in delay-2">
+                        <div class="contact-icon">🕒</div>
+                        <h4>Office Hours</h4>
+                        <p>Monday - Friday: 8:00 AM - 5:00 PM<br>Saturday: 9:00 AM - 2:00 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Thank You -->
+        <div class="slide title-slide">
+            <!--<img src="images/umat-logo.png" alt="University Logo" class="university-logo animate-in">-->
+            <h1 class="animate-in">Thank You</h1>
+            <p class="subtitle animate-in delay-1">Questions & Discussion</p>
+            <div class="author-info animate-in delay-2">
+                <h3>🚀 Ready to Start Your Engineering Journey?</h3>
+                <p>Join our comprehensive Engineering Practice program and build the skills that industry demands.</p>
+                <p style="margin-top: 1rem;">
+                    <strong>Contact us today to get more insights on MechaMinds.</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function updateSlideCounter() {
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function showSlide(n) {
+            // Update slide positions
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev', 'next');
+                
+                if (index === n) {
+                    slide.classList.add('active');
+                } else if (index === n + 1) {
+                    slide.classList.add('next');
+                } else if (index === n - 1) {
+                    slide.classList.add('prev');
+                }
+            });
+            
+            // Reset animations for the active slide
+            const activeSlide = slides[n];
+            const animElements = activeSlide.querySelectorAll('.animate-in');
+            animElements.forEach(el => {
+                el.style.animation = 'none';
+                void el.offsetWidth; // Trigger reflow
+                el.style.animation = '';
+            });
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = n === 0;
+            document.getElementById('nextBtn').disabled = n === totalSlides - 1;
+            
+            updateSlideCounter();
+            updateProgressBar();
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                changeSlide(-1);
+            } else if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            } else if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Touch support for mobile devices
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                changeSlide(1); // Swipe left - next slide
+            }
+            if (touchEndX > touchStartX + 50) {
+                changeSlide(-1); // Swipe right - previous slide
+            }
+        }
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
